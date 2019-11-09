@@ -112,7 +112,8 @@ class LaserWeaponArmory(Scene):
             you can't get the bomb. The code is 3 digits.
             """))
 
-        cpde = f"{randint(1,9)}{randint(1,9)}{randint(1,9)}"
+        #code = f"{randint(1,2)}{randint(1,2)}{randint(1,2)}"
+        code = "111"
         guess = input("[keypad]> ")
         guesses = 0
 
@@ -161,7 +162,7 @@ class TheBridge(Scene):
                     bomb. You die knowing they will probably blow up
                     when it goes off.
                     """))
-                return 'death'
+            return 'death'
 
         elif action == 'slowly place the bomb':
             print(dedent("""
@@ -195,7 +196,6 @@ class EscapePod(Scene):
         good_pod = randint(1,5)
         guess = input("[pod #]> ")
 
-
         if int(guess) != good_pod:
             print(dedent("""
                   You jump into pod {guess} and hit the eject button.
@@ -205,7 +205,7 @@ class EscapePod(Scene):
                   """))
             return 'death'
         else:
-            print(dedent("""
+            print(dedent(f"""
                   You jump into pod {guess} and hit the eject button.
                   The pod easily slides out into space heading to the
                   planet below.  As it flies to the planet, you look
@@ -221,3 +221,28 @@ class Finished(Scene):
     def enter(self):
         print("You won! Good job.")
         return 'finished'
+
+class Map(object):
+
+    scenes = {
+        'central_corridor': CentralCorridor(),
+        'laser_weapon_armory': LaserWeaponArmory(),
+        'the_bridge': TheBridge(),
+        'escape_pod': EscapePod(),
+        'death': Death(),
+        'finished': Finished(),
+    }
+
+    def __init__(self, start_scene):
+        self.start_scene = start_scene
+
+    def next_scene(self, scene_name):
+        val = Map.scenes.get(scene_name)
+        return val
+
+    def opening_scene(self):
+        return self.next_scene(self.start_scene)
+
+a_map = Map('central_corridor')
+a_game = Engine(a_map)
+a_game.play()
